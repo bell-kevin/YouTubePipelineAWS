@@ -1,0 +1,89 @@
+﻿Project Proposal – YouTube Data Analytics Pipeline
+Team: Kevin Bell, Jake Child, Abel Mkina
+Course: CS 6705 – Applied Cloud Computing
+Instructor: Prof. Joshua Jensen Due Date: November 16, 2025
+1.   Project Overview
+Our project will build a cloud-based YouTube analytics pipeline that retrieves trending-video metadata and comment text through the YouTube Data API v3, processes it on AWS, and performs descriptive and predictive analytics.
+The system will: 
+* Collect daily “most popular” videos by region (U.S., Canada, UK).
+* Ingest comment data to determine sentiment (positive / neutral / negative).
+* Produce dashboards showing trending categories, geographic patterns, and sentiment distributions.
+* Use regression models to predict near-term view growth and engagement trends. 
+Deliverables will include a working AWS pipeline, visual analytics dashboards, and a final report describing architecture, data flows, and findings.
+2.   Tools and Technologies
+Layer
+	Tools / Services
+	 
+	Purpose
+	Data Ingestion
+	YouTube Data API v3, Python (googleapiclien
+	t)
+	Retrieve metadata & comments
+	Processing & Storage
+	AWS Lambda, S3, Glue Crawler, Athena
+	 
+	ETL + SQL queries on S3 data
+	Analytics
+	Python (pandas, NumPy, TextBlob or VADER
+	)
+	Sentiment & predictive analysis
+	Visualization
+	AWS QuickSight or Plotly Dash
+	 
+	Interactive charts / dashboards
+	Collaboration
+	GitHub, Discord, Zoom
+	 
+	Version control & communication
+	3.   AWS Budget Estimate
+Service
+	Expected Usage
+	Estimated Monthly
+ Cost (USD)
+	AWS S3 (50 GB)
+	≈ $1.25
+	1.25
+	AWS Lambda
+	≈ 1M requests
+	0.40
+	AWS Glue + Athena
+	Analysis queries
+	5.00
+	AWS QuickSight
+	Standard per-user
+	9.00
+	Total
+	 
+	≈ $16 – $20
+	4.   Weekly Milestones
+Week
+	Milestone
+	Deliverables
+	Nov 3–9
+	Team formation & API tests
+	API key verified + sample JSON retrieved
+	Nov 10–16
+	Project proposal submitted
+	This document
+	Nov 17–23
+	AWS Lambda + S3 data pipeline
+	Ingestion scripts uploading daily data
+	Nov 24–30
+	Data cleaning + sentiment model
+	CSV/Parquet datasets + sentiment scores
+	Dec 1–7
+	Predictive analytics + visualizations
+	Regression charts + QuickSight dashboard
+	Dec 8–13
+	Testing + Final Presentation Prep
+	Demo video & report submitted
+	5.   Team Collaboration Plan
+* Communication: Discord channel + weekly Zoom check-ins.
+* Version Control: GitHub repo (“yt-analytics-pipeline”).
+* Task Tracking: Kanban board (GitHub Projects).
+* AWS Access: Shared IAM roles with least-privilege policies.
+6.   Expected Outcomes
+By the end of the semester, the project will deliver:
+* A fully automated YouTube data pipeline running on AWS.
+* Dashboards illustrating regional and category-based trending patterns.
+* Sentiment and prediction reports demonstrating applied cloud analytics.
