@@ -2,7 +2,7 @@
 
 # CS 6705 Final Project
 
-## Project Proposal
+## Project Proposal Instructions
 
 There are a number of project options available for your team. You can select one of the ones that I describe on the project options page, or you can work on your own idea. Please discuss that idea with me, either in person or via discord prior to submitting this assignment. Keep in mind this is the project your group will be working on the remainder of the semester, so choose something that will keep you busy and interested the whole time. Please make sure you give me enough detail to understand what it is you are planning on doing.
 
