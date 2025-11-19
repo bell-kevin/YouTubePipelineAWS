@@ -12,15 +12,15 @@ This project will allow you to utilize the skills you have learned this semester
 
 For this assignment, I want you to submit a project proposal. The proposal must consist of the following minimums:
 
-    A thorough description of the project (e.g. what are you going to do, and deliver by the end of the semester)
+A thorough description of the project (e.g. what are you going to do, and deliver by the end of the semester)
     
-    A description of the tools you plan on utilizing the accomplish the project
+A description of the tools you plan on utilizing the accomplish the project
     
-    A proposed budget of resources required to complete the project (use the aws pricing calculator)
+A proposed budget of resources required to complete the project (use the aws pricing calculator)
     
-    A set of milestones each week you will complete by the presentation deadline (the last class day of the semester).
+A set of milestones each week you will complete by the presentation deadline (the last class day of the semester).
     
-    A plan on how your team will collaborate / communicate / etc.
+A plan on how your team will collaborate / communicate / etc.
 
 Because you will spend much of your career working in teams, team participation is critical to your success in this class. It is also not fair for one team member to do the work while others "free-ride" off of their work. Much like in industry, there are consequences when not everyone works together equitably. Teams will have the option of ‘firing’ you if they feel that you are not equitably participating in the project. This means that if you are fired, you will not be on a team, and may receive a zero on the final project and evaluation. You may petition other teams to ‘hire’ you, but if no other team will hire you it will result in a failure for the course. Alternatively, you can attempt a group project on your own as an individual, but you will be subject to the same expectations as all of the other groups at the final submission (even if the firing takes place at the end).
 
