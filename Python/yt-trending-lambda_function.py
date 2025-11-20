@@ -1,6 +1,6 @@
 import json
 import os
-import datetime
+from datetime import datetime, timezone
 import urllib.parse
 import urllib.request
 
@@ -8,9 +8,11 @@ import boto3
 
 secrets_client = boto3.client("secretsmanager")
 s3_client = boto3.client("s3")
+glue = boto3.client("glue")
 
 # Cache the key across invocations
 YOUTUBE_API_KEY = None
+
 
 def get_api_key():
     global YOUTUBE_API_KEY
@@ -23,6 +25,7 @@ def get_api_key():
     data = json.loads(secret_str)
     YOUTUBE_API_KEY = data["YOUTUBE_API_KEY"]
     return YOUTUBE_API_KEY
+
 
 def fetch_trending(region_code, max_results=50):
     api_key = get_api_key()
@@ -41,20 +44,32 @@ def fetch_trending(region_code, max_results=50):
         body = resp.read().decode("utf-8")
         return json.loads(body)
 
+
 def lambda_handler(event, context):
-    bucket = os.environ["BUCKET_NAME"]
+    # Environment variables
+    bucket = os.environ["BUCKET_NAME"]          # e.g. yt-analytics-cs6705-data
     regions_str = os.environ.get("REGIONS", "US")
     regions = [r.strip() for r in regions_str.split(",") if r.strip()]
 
-    now = datetime.datetime.utcnow()
+    # Optionally make curated path configurable too:
+    curated_trending_path = os.environ.get(
+        "CURATED_TRENDING_PATH",
+        f"s3://{bucket}/curated/trending/"
+    )
+
+    # Current UTC date/time
+    now = datetime.now(timezone.utc)
     date_str = now.strftime("%Y-%m-%d")
     ts_str = now.strftime("%Y%m%dT%H%M%SZ")
 
     results = {}
+    glue_runs = []
 
     for region in regions:
         print(f"Fetching trending videos for region={region}")
         data = fetch_trending(region)
+
+        # Raw JSON path for this region/date
         key = f"raw/trending/region={region}/date={date_str}/trending_{region}_{ts_str}.json"
 
         s3_client.put_object(
@@ -69,10 +84,31 @@ def lambda_handler(event, context):
             "item_count": len(data.get("items", []))
         }
 
+        # Start Glue ETL job for this region + date
+        raw_trending_path = f"s3://{bucket}/raw/trending/region={region}/date={date_str}"
+
+        response = glue.start_job_run(
+            JobName="yt_trending_etl_job",
+            Arguments={
+                "--RAW_S3_PATH": raw_trending_path,
+                "--CURATED_S3_PATH": curated_trending_path,
+            }
+        )
+
+        glue_runs.append({
+            "region": region,
+            "job_run_id": response["JobRunId"],
+            "raw_path": raw_trending_path,
+        })
+
+        print(f"Started Glue job yt_trending_etl_job for region={region}, "
+              f"JobRunId={response['JobRunId']}")
+
     return {
         "statusCode": 200,
         "body": json.dumps({
-            "message": "Trending harvest complete",
+            "message": "Trending harvest + ETL trigger complete",
             "results": results,
+            "glue_runs": glue_runs,
         }),
     }
