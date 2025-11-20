@@ -1,34 +1,51 @@
+import sys
+from awsglue.transforms import *
+from awsglue.utils import getResolvedOptions
+from pyspark.context import SparkContext
+from awsglue.context import GlueContext
+from awsglue.job import Job
 from pyspark.sql import functions as F
 from pyspark.sql.window import Window
 
-# ==== CONFIG – CHANGE THESE FOR YOUR ENVIRONMENT ====
-USE_GLUE_TABLE = False   # True = use Glue Catalog table, False = read JSON from S3 paths
+# --------- Job args ---------
+args = getResolvedOptions(
+    sys.argv,
+    [
+        "JOB_NAME",
+        "RAW_S3_PATH",
+        "CURATED_S3_PATH"
+    ]
+)
 
-# S3 buckets / prefixes
-RAW_S3_PATH      = "s3://yt-analytics-cs6705-data/raw/trending/region=*/date=*/*.json"
-CURATED_S3_PATH  = "s3://yt-analytics-cs6705-data/curated/trending/"
+raw_s3_path = args["RAW_S3_PATH"]
+curated_s3_path = args["CURATED_S3_PATH"]
 
-# Glue catalog (if using)
-GLUE_DB          = "`youtube-analytics`"
-RAW_VIDEOS_TABLE = "`raw_trending`"
-CURATED_TABLE    = "`curated_trending`"  # logical name; actual Glue table is via crawler or CREATE TABLE
+# --------- Glue / Spark bootstrap ---------
+sc = SparkContext()
+glueContext = GlueContext(sc)
+spark = glueContext.spark_session
 
-print("Config loaded.")
+job = Job(glueContext)
+job.init(args["JOB_NAME"], args)
 
-if USE_GLUE_TABLE:
-    print(f"Reading from Glue table: {GLUE_DB}.{RAW_VIDEOS_TABLE}")
-    raw_videos = spark.table(f"{GLUE_DB}.{RAW_VIDEOS_TABLE}")
-else:
-    print(f"Reading JSON from S3: {RAW_S3_PATH}")
-    raw_videos = spark.read.json(RAW_S3_PATH)
+# Optional: ignore missing/corrupt files for robustness
+spark.conf.set("spark.sql.files.ignoreMissingFiles", "true")
+spark.conf.set("spark.sql.files.ignoreCorruptFiles", "true")
 
+# --------- 1. Read RAW JSON from S3 ---------
+# Example: s3://.../raw/trending/region=US/date=2025-11-19/part-*.json
+print(f"Reading raw trending videos from: {raw_s3_path}")
+
+raw_videos = (
+    spark.read
+         .option("multiLine", "true")
+         .json(raw_s3_path)
+)
+
+print("Raw schema:")
 raw_videos.printSchema()
-raw_videos.show(5, truncate=False)
-print(f"Raw count: {raw_videos.count()}")
 
-from pyspark.sql import functions as F
-
-# 1) Explode the items array so we get one row per video, and capture the source file path
+# --------- 2. Explode + flatten + region/trending_date from path ---------
 videos_exploded = (
     raw_videos
     .select(
@@ -37,10 +54,7 @@ videos_exploded = (
     )
 )
 
-videos_exploded.printSchema()
-videos_exploded.show(3, truncate=False)
-
-# 2) Flatten fields from the item struct
+# Flatten nested fields
 videos_flat = (
     videos_exploded
     .select(
@@ -55,10 +69,10 @@ videos_flat = (
         F.col("item.snippet.tags").alias("tags"),
         F.col("item.snippet.defaultLanguage").alias("default_lang"),
 
-        # Times (raw string)
+        # Time
         F.col("item.snippet.publishedAt").alias("published_at_raw"),
 
-        # Performance metrics (raw strings)
+        # Metrics (raw strings)
         F.col("item.statistics.viewCount").alias("view_count_raw"),
         F.col("item.statistics.likeCount").alias("like_count_raw"),
         F.col("item.statistics.commentCount").alias("comment_count_raw"),
@@ -69,13 +83,13 @@ videos_flat = (
         F.col("item.contentDetails.definition").alias("definition"),
         F.col("item.contentDetails.caption").alias("caption"),
 
-        # Source file (for region/date extraction)
+        # Source file for region & date extraction
         F.col("source_file")
     )
 )
 
-# 3) Extract region and trending_date from the S3 path, e.g.
-# s3://bucket/raw/youtube/trending/region=US/date=2025-11-18/part-0000.json
+# Extract region and trending_date from path
+# Expects paths like: .../region=US/date=2025-11-19/part-0000.json
 videos_flat = (
     videos_flat
     .withColumn(
@@ -88,10 +102,7 @@ videos_flat = (
     )
 )
 
-videos_flat.printSchema()
-videos_flat.select("video_id", "region", "trending_date_raw", "source_file").show(10, truncate=False)
-
-# Cast numeric metrics
+# --------- 3. Type casting & basic cleaning ---------
 videos_typed = (
     videos_flat
     .withColumn("view_count",    F.col("view_count_raw").cast("bigint"))
@@ -100,7 +111,6 @@ videos_typed = (
     .drop("view_count_raw", "like_count_raw", "comment_count_raw")
 )
 
-# Drop rows with critical nulls (video_id, title, published_at_raw)
 videos_clean = (
     videos_typed
     .filter(F.col("video_id").isNotNull())
@@ -108,11 +118,7 @@ videos_clean = (
     .filter(F.col("published_at_raw").isNotNull())
 )
 
-print("After cleaning (null filters):", videos_clean.count())
-videos_clean.select("video_id", "title", "region", "trending_date_raw").show(10, truncate=False)
-
-from pyspark.sql.window import Window
-
+# --------- 4. Deduplicate by video_id (keep highest view_count) ---------
 w = Window.partitionBy("video_id").orderBy(F.col("view_count").desc_nulls_last())
 
 videos_dedup = (
@@ -122,11 +128,7 @@ videos_dedup = (
     .drop("rn")
 )
 
-print("After dedup on video_id:", videos_dedup.count())
-videos_dedup.select(
-    "video_id", "view_count", "region", "trending_date_raw"
-).show(10, truncate=False)
-
+# --------- 5. Timestamp normalization & date features ---------
 videos_dates = (
     videos_dedup
     .withColumn("published_at", F.to_timestamp("published_at_raw"))
@@ -134,43 +136,36 @@ videos_dates = (
     .withColumn("published_date", F.to_date("published_at"))
     .withColumn("published_hour", F.hour("published_at"))
     .withColumn("published_year", F.year("published_at"))
-    .withColumn("published_week", F.weekofyear("published_at"))  # integer 1–53
+    .withColumn("published_week", F.weekofyear("published_at").cast("int"))
     .withColumn("trending_date", F.to_date("trending_date_raw"))
 )
 
-videos_dates.select(
-    "video_id", "region", "trending_date", "published_at", "published_date"
-).show(10, truncate=False)
-
+# --------- 6. Optional text cleaning ---------
 videos_text = (
     videos_dates
-    # lowercase title
     .withColumn("title_clean", F.lower(F.col("title")))
-    # remove URLs
     .withColumn(
         "title_clean",
-        F.regexp_replace("title_clean", r"http[s]?://\\S+", "")
+        F.regexp_replace("title_clean", r"http[s]?://\S+", "")
     )
-    # normalize whitespace
     .withColumn(
         "title_clean",
-        F.regexp_replace("title_clean", r"\\s+", " ")
+        F.regexp_replace("title_clean", r"\s+", " ")
     )
 )
 
-videos_text.select("video_id", "title", "title_clean").show(10, truncate=False)
+df_curated = videos_text
 
-df_curated = videos_text  # or videos_dates if you skip text cleaning
-
-print("Writing curated Parquet to:", CURATED_S3_PATH)
+# --------- 7. Write curated parquet to S3 ---------
+print(f"Writing curated Parquet to: {curated_s3_path}")
 
 (
     df_curated
     .write
-    .mode("overwrite")  # change to "append" once your pipeline is stable
+    .mode("overwrite")  # later: 'append' for incremental
     .partitionBy("region", "trending_date")
     .format("parquet")
-    .save(CURATED_S3_PATH)
+    .save(curated_s3_path)
 )
 
 print("Write complete.")
