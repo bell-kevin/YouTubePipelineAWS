@@ -87,11 +87,11 @@ def lambda_handler(event, context):
         # Start Glue ETL job for this region + date
         raw_trending_path = f"s3://{bucket}/raw/trending/region={region}/date={date_str}"
 
-        response = glue.start_job_run(
-            JobName="yt_trending_etl_job",
-            Arguments={
-                "--RAW_S3_PATH": raw_trending_path,
-                "--CURATED_S3_PATH": curated_trending_path,
+        response = glue.start_workflow_run(
+            Name="YouTubeTrendingWorkflow",
+            RunProperties={
+                "RAW_S3_PATH": raw_trending_path,
+                "CURATED_S3_PATH": curated_trending_path,
             }
         )
 

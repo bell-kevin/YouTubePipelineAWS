@@ -1,122 +1,124 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0" version="29.0.2">
-  <diagram id="yt-aws-pipeline" name="Page-1">
-    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="ingestion-group" value="&lt;b&gt;Ingestion Layer&lt;/b&gt;" style="sketch=0;outlineConnect=0;dashed=0;html=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_general;strokeColor=#82b366;fillColor=#d5e8d4;verticalAlign=top;align=left;spacingTop=26;" vertex="1" parent="1">
-          <mxGeometry x="50" y="140" width="430" height="260" as="geometry" />
-        </mxCell>
-        <mxCell id="storage-group" value="Storage &amp;amp; Catalog Layer" style="sketch=0;outlineConnect=0;dashed=0;html=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_general;strokeColor=#6c8ebf;fillColor=#dae8fc;verticalAlign=top;align=left;spacingTop=26;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="500" y="140" width="430" height="370" as="geometry" />
-        </mxCell>
-        <mxCell id="analytics-group" value="Analytics Layer (EMR &amp;amp; Spark)" style="sketch=0;outlineConnect=0;dashed=0;html=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_general;strokeColor=#d79b00;fillColor=#ffe6cc;verticalAlign=top;align=left;spacingTop=26;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="1050" y="140" width="430" height="260" as="geometry" />
-        </mxCell>
-        <mxCell id="serving-group" value="Query &amp;amp; Visualization Layer" style="sketch=0;outlineConnect=0;dashed=0;html=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_general;strokeColor=#d6b656;fillColor=#fff2cc;verticalAlign=top;align=left;spacingTop=26;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="1049" y="430" width="430" height="230" as="geometry" />
-        </mxCell>
-        <mxCell id="8QwwxUg9QgeyXC8pmGmJ-1" style="edgeStyle=none;html=1;" edge="1" parent="1" source="B7dqdY4Db7LJuOoZowLg-7" target="lambda-trending">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="8QwwxUg9QgeyXC8pmGmJ-5" value="Trending Video Metadata" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="8QwwxUg9QgeyXC8pmGmJ-1">
-          <mxGeometry x="0.2953" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="8QwwxUg9QgeyXC8pmGmJ-2" value="Comments for Top Videos" style="edgeStyle=none;html=1;" edge="1" parent="1" source="B7dqdY4Db7LJuOoZowLg-7" target="lambda-comments">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="user-analyst" value="Stakeholders" style="shape=mxgraph.aws4.user;outlineConnect=0;html=1;strokeColor=#2D7600;fillColor=#60a917;fontColor=light-dark(#ffffff, #2de109);verticalLabelPosition=bottom;verticalAlign=top;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1220" y="740" width="90" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="8QwwxUg9QgeyXC8pmGmJ-3" value="Daily Trigger" style="edgeStyle=none;html=1;" edge="1" parent="1" source="eventbridge" target="lambda-trending">
-          <mxGeometry x="-0.4172" y="1" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="8QwwxUg9QgeyXC8pmGmJ-4" value="Daily Trigger" style="edgeStyle=none;html=1;" edge="1" parent="1" source="eventbridge" target="lambda-comments">
-          <mxGeometry x="-0.053" y="4" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="eventbridge" value="Amazon EventBridge&#xa;(Daily Scheduler)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#D05C17;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.eventbridge;" vertex="1" parent="1">
-          <mxGeometry x="105" y="218" width="70" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="8QwwxUg9QgeyXC8pmGmJ-6" value="Raw Trending&lt;div&gt;Videos (JSON)&lt;/div&gt;" style="edgeStyle=none;html=1;" edge="1" parent="1" source="lambda-trending" target="s3-raw">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="lambda-trending" value="AWS Lambda&#xa;Trending Videos Ingest" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#D05C17;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="1">
-          <mxGeometry x="330" y="150" width="78" height="78" as="geometry" />
-        </mxCell>
-        <mxCell id="8QwwxUg9QgeyXC8pmGmJ-7" value="Raw Comments&lt;div&gt;(JSON)&lt;/div&gt;" style="edgeStyle=none;html=1;" edge="1" parent="1" source="lambda-comments" target="s3-raw">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="lambda-comments" value="AWS Lambda&#xa;Comments Ingest" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#D05C17;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="1">
-          <mxGeometry x="288" y="280" width="78" height="78" as="geometry" />
-        </mxCell>
-        <mxCell id="8QwwxUg9QgeyXC8pmGmJ-8" value="Read Raw Videos&lt;div&gt;&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;&amp;amp;&amp;nbsp;&lt;/font&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(63, 63, 63); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;Comments&lt;/span&gt;&lt;/div&gt;" style="edgeStyle=none;html=1;" edge="1" parent="1" source="s3-raw" target="emr">
-          <mxGeometry x="0.3112" y="19" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="8QwwxUg9QgeyXC8pmGmJ-10" value="Crawl Raw Schema" style="edgeStyle=none;html=1;" edge="1" parent="1" source="s3-raw" target="glue">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="s3-raw" value="Amazon S3&#xa;Raw JSON&#xa;(Trending + Comments)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#1B4F72;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="1">
-          <mxGeometry x="550" y="236" width="78" height="78" as="geometry" />
-        </mxCell>
-        <mxCell id="8QwwxUg9QgeyXC8pmGmJ-11" value="Crawl Curated Schema" style="edgeStyle=none;html=1;" edge="1" parent="1" source="s3-curated" target="glue">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="8QwwxUg9QgeyXC8pmGmJ-12" value="External Tables&lt;div&gt;Parquet&lt;/div&gt;" style="edgeStyle=none;html=1;" edge="1" parent="1" source="s3-curated" target="athena">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="s3-curated" value="Amazon S3&#xa;Curated Parquet&#xa;(Region / Date Partitions)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#1B4F72;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="1">
-          <mxGeometry x="700" y="358" width="78" height="78" as="geometry" />
-        </mxCell>
-        <mxCell id="B7dqdY4Db7LJuOoZowLg-3" value="Table Metadata" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="glue" target="athena">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="glue" value="AWS Glue&#xa;Crawler &amp; Data Catalog" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#4A235A;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.glue;" vertex="1" parent="1">
-          <mxGeometry x="750" y="150" width="78" height="78" as="geometry" />
-        </mxCell>
-        <mxCell id="8QwwxUg9QgeyXC8pmGmJ-9" value="Currated Parquet&lt;div&gt;(region/date)&lt;/div&gt;" style="edgeStyle=none;html=1;" edge="1" parent="1" source="emr" target="s3-curated">
-          <mxGeometry x="0.5629" y="-17" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="emr" value="Amazon EMR&#xa;Spark Cluster" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#154360;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.emr;" vertex="1" parent="1">
-          <mxGeometry x="1090" y="210" width="78" height="78" as="geometry" />
-        </mxCell>
-        <mxCell id="emr-detail" value="PySpark ETL&#xa;- Flatten comments&#xa;- Join with videos&#xa;- Write curated Parquet&#xa;&#xa;Spark NLP&#xa;- Sentiment &amp; Topics&#xa;&#xa;Feature Eng &amp; Models&#xa;- Engagement features&#xa;- GB regression &amp; classification" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#555555;fillColor=#FFFFFF;fontColor=#333333;" vertex="1" parent="1">
-          <mxGeometry x="1200" y="200" width="260" height="170" as="geometry" />
-        </mxCell>
-        <mxCell id="B7dqdY4Db7LJuOoZowLg-4" value="Query Results /&lt;div&gt;Datasets&lt;/div&gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="athena" target="quicksight">
-          <mxGeometry x="-0.0316" y="22" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="B7dqdY4Db7LJuOoZowLg-6" value="Ad-hoc SQL" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="athena" target="user-analyst">
-          <mxGeometry x="0.0295" y="-36" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="athena" value="Amazon Athena&#xa;Interactive SQL" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#1B2631;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.athena;" vertex="1" parent="1">
-          <mxGeometry x="1079" y="500" width="78" height="78" as="geometry" />
-        </mxCell>
-        <mxCell id="B7dqdY4Db7LJuOoZowLg-5" value="Dashboards:&lt;div&gt;Trends, Sentiment, Prediction&lt;/div&gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="quicksight" target="user-analyst">
-          <mxGeometry x="0.1975" y="79" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="quicksight" value="Amazon QuickSight&#xa;Dashboards" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#1B2631;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.quicksight;" vertex="1" parent="1">
-          <mxGeometry x="1265" y="506" width="78" height="78" as="geometry" />
-        </mxCell>
-        <mxCell id="B7dqdY4Db7LJuOoZowLg-7" value="" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.weblogos.youtube;fillColor=#FF2626;gradientColor=#B5171F;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" vertex="1" parent="1">
-          <mxGeometry x="80" y="20" width="157.20000000000002" height="65.8" as="geometry" />
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
+<mxfile host="65bd71144e">
+    <diagram id="yt-aws-pipeline" name="Page-1">
+        <mxGraphModel dx="1426" dy="1139" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="ingestion-group" value="&lt;b&gt;Ingestion Layer&lt;/b&gt;" style="sketch=0;outlineConnect=0;dashed=0;html=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_general;strokeColor=#82b366;fillColor=#d5e8d4;verticalAlign=top;align=left;spacingTop=26;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="140" width="430" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="storage-group" value="Storage &amp;amp; Catalog Layer" style="sketch=0;outlineConnect=0;dashed=0;html=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_general;strokeColor=#6c8ebf;fillColor=#dae8fc;verticalAlign=top;align=left;spacingTop=26;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="500" y="140" width="430" height="370" as="geometry"/>
+                </mxCell>
+                <mxCell id="analytics-group" value="Analytics Layer (EMR &amp;amp; Spark)" style="sketch=0;outlineConnect=0;dashed=0;html=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_general;strokeColor=#d79b00;fillColor=#ffe6cc;verticalAlign=top;align=left;spacingTop=26;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="1050" y="140" width="430" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="serving-group" value="Query &amp;amp; Visualization Layer" style="sketch=0;outlineConnect=0;dashed=0;html=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_general;strokeColor=#d6b656;fillColor=#fff2cc;verticalAlign=top;align=left;spacingTop=26;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="1049" y="430" width="430" height="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="8QwwxUg9QgeyXC8pmGmJ-1" style="edgeStyle=none;html=1;" parent="1" source="B7dqdY4Db7LJuOoZowLg-7" target="lambda-trending" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="8QwwxUg9QgeyXC8pmGmJ-5" value="Trending Video Metadata" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="8QwwxUg9QgeyXC8pmGmJ-1" vertex="1" connectable="0">
+                    <mxGeometry x="0.2953" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8QwwxUg9QgeyXC8pmGmJ-2" value="Comments for Top Videos" style="edgeStyle=none;html=1;" parent="1" source="B7dqdY4Db7LJuOoZowLg-7" target="lambda-comments" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="user-analyst" value="Stakeholders" style="shape=mxgraph.aws4.user;outlineConnect=0;html=1;strokeColor=#2D7600;fillColor=#60a917;fontColor=light-dark(#ffffff, #2de109);verticalLabelPosition=bottom;verticalAlign=top;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1220" y="740" width="90" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="8QwwxUg9QgeyXC8pmGmJ-3" value="Daily Trigger" style="edgeStyle=none;html=1;" parent="1" source="eventbridge" target="lambda-trending" edge="1">
+                    <mxGeometry x="-0.4172" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8QwwxUg9QgeyXC8pmGmJ-4" value="Daily Trigger" style="edgeStyle=none;html=1;" parent="1" source="eventbridge" target="lambda-comments" edge="1">
+                    <mxGeometry x="-0.053" y="4" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="eventbridge" value="Amazon EventBridge&#xa;(Daily Scheduler)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#D05C17;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.eventbridge;" parent="1" vertex="1">
+                    <mxGeometry x="105" y="218" width="70" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="8QwwxUg9QgeyXC8pmGmJ-6" value="Raw Trending&lt;div&gt;Videos (JSON)&lt;/div&gt;" style="edgeStyle=none;html=1;" parent="1" source="lambda-trending" target="s3-raw" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="lambda-trending" value="AWS Lambda&#xa;Trending Videos Ingest" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#D05C17;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="150" width="78" height="78" as="geometry"/>
+                </mxCell>
+                <mxCell id="8QwwxUg9QgeyXC8pmGmJ-7" value="Raw Comments&lt;div&gt;(JSON)&lt;/div&gt;" style="edgeStyle=none;html=1;" parent="1" source="lambda-comments" target="s3-raw" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="lambda-comments" value="AWS Lambda&#xa;Comments Ingest" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#D05C17;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" parent="1" vertex="1">
+                    <mxGeometry x="288" y="280" width="78" height="78" as="geometry"/>
+                </mxCell>
+                <mxCell id="8QwwxUg9QgeyXC8pmGmJ-8" value="Read Raw Videos&lt;div&gt;&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;&amp;amp;&amp;nbsp;&lt;/font&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(63, 63, 63); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;Comments&lt;/span&gt;&lt;/div&gt;" style="edgeStyle=none;html=1;" parent="1" source="s3-raw" target="emr" edge="1">
+                    <mxGeometry x="0.3112" y="19" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8QwwxUg9QgeyXC8pmGmJ-10" value="Crawl Raw Schema" style="edgeStyle=none;html=1;" parent="1" source="s3-raw" target="glue" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="s3-raw" value="Amazon S3&#xa;Raw JSON&#xa;(Trending + Comments)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#1B4F72;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" parent="1" vertex="1">
+                    <mxGeometry x="550" y="236" width="78" height="78" as="geometry"/>
+                </mxCell>
+                <mxCell id="8QwwxUg9QgeyXC8pmGmJ-11" value="Crawl Curated Schema" style="edgeStyle=none;html=1;" parent="1" source="s3-curated" target="glue" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="8QwwxUg9QgeyXC8pmGmJ-12" value="External Tables&lt;div&gt;Parquet&lt;/div&gt;" style="edgeStyle=none;html=1;" parent="1" source="s3-curated" target="athena" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="s3-curated" value="Amazon S3&#xa;Curated Parquet&#xa;(Region / Date Partitions)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#1B4F72;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="358" width="78" height="78" as="geometry"/>
+                </mxCell>
+                <mxCell id="B7dqdY4Db7LJuOoZowLg-3" value="Table Metadata" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="glue" target="athena" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="glue" value="AWS Glue&#xa;Crawler &amp; Data Catalog" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#4A235A;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.glue;" parent="1" vertex="1">
+                    <mxGeometry x="750" y="150" width="78" height="78" as="geometry"/>
+                </mxCell>
+                <mxCell id="8QwwxUg9QgeyXC8pmGmJ-9" value="Currated Parquet&lt;div&gt;(region/date)&lt;/div&gt;" style="edgeStyle=none;html=1;" parent="1" source="emr" target="s3-curated" edge="1">
+                    <mxGeometry x="0.5629" y="-17" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="emr" value="Amazon EMR&#xa;Spark Cluster" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#154360;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.emr;" parent="1" vertex="1">
+                    <mxGeometry x="1090" y="210" width="78" height="78" as="geometry"/>
+                </mxCell>
+                <mxCell id="emr-detail" value="PySpark ETL&#xa;- Flatten comments&#xa;- Join with videos&#xa;- Write curated Parquet&#xa;&#xa;Spark NLP&#xa;- Sentiment &amp; Topics&#xa;&#xa;Feature Eng &amp; Models&#xa;- Engagement features&#xa;- GB regression &amp; classification" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#555555;fillColor=#FFFFFF;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="1200" y="200" width="260" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="B7dqdY4Db7LJuOoZowLg-4" value="Query Results /&lt;div&gt;Datasets&lt;/div&gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="athena" target="4" edge="1">
+                    <mxGeometry x="-0.0316" y="22" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                        <mxPoint x="1265" y="543.741935483871" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="B7dqdY4Db7LJuOoZowLg-6" value="Ad-hoc SQL" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="athena" target="user-analyst" edge="1">
+                    <mxGeometry x="0.0295" y="-36" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="athena" value="Amazon Athena&#xa;Interactive SQL" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#1B2631;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.athena;" parent="1" vertex="1">
+                    <mxGeometry x="1079" y="500" width="78" height="78" as="geometry"/>
+                </mxCell>
+                <mxCell id="B7dqdY4Db7LJuOoZowLg-5" value="Dashboards:&lt;div&gt;Trends, Sentiment, Prediction&lt;/div&gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="4" target="user-analyst" edge="1">
+                    <mxGeometry x="0.1975" y="79" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                        <mxPoint x="1297.6625" y="584" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="B7dqdY4Db7LJuOoZowLg-7" value="" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.weblogos.youtube;fillColor=#FF2626;gradientColor=#B5171F;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="20" width="157.20000000000002" height="65.8" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="EMR Jupyter Notebook&lt;div&gt;Dashboard&lt;/div&gt;" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.opensearch_dashboards;" vertex="1" parent="1">
+                    <mxGeometry x="1270" y="509.5" width="78" height="59" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
 </mxfile>

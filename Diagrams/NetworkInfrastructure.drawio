@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="Page-1" id="UhOGtj_lEKygu4xe1HQf">
-        <mxGraphModel dx="877" dy="936" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1117" dy="1139" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -79,9 +79,6 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="HSgyaSle7UJwmygqgZU6-45" value="Amazon Quicksight&lt;div&gt;Dashboards&lt;/div&gt;" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.quicksight;" parent="HSgyaSle7UJwmygqgZU6-2" vertex="1">
-                    <mxGeometry x="948" y="214" width="78" height="78" as="geometry"/>
-                </mxCell>
                 <mxCell id="HSgyaSle7UJwmygqgZU6-54" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;entryPerimeter=0;" parent="HSgyaSle7UJwmygqgZU6-2" source="HSgyaSle7UJwmygqgZU6-40" target="HSgyaSle7UJwmygqgZU6-18" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="898" y="684" as="targetPoint"/>
@@ -127,9 +124,10 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="HSgyaSle7UJwmygqgZU6-51" value="Datasets Via&lt;div&gt;Athena&lt;/div&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="HSgyaSle7UJwmygqgZU6-2" source="HSgyaSle7UJwmygqgZU6-45" target="HSgyaSle7UJwmygqgZU6-41" edge="1">
+                <mxCell id="HSgyaSle7UJwmygqgZU6-51" value="Datasets Via&lt;div&gt;Athena&lt;/div&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="HSgyaSle7UJwmygqgZU6-2" source="2" target="HSgyaSle7UJwmygqgZU6-41" edge="1">
                     <mxGeometry x="-0.4186" y="31" relative="1" as="geometry">
                         <mxPoint as="offset"/>
+                        <mxPoint x="987" y="292" as="sourcePoint"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="HSgyaSle7UJwmygqgZU6-52" value="Crawl Raw/Curated&lt;div&gt;Update Catalog&lt;/div&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="HSgyaSle7UJwmygqgZU6-2" source="HSgyaSle7UJwmygqgZU6-40" target="HSgyaSle7UJwmygqgZU6-17" edge="1">
@@ -148,6 +146,9 @@
                     <mxGeometry x="0.2079" y="2" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
+                </mxCell>
+                <mxCell id="2" value="EMR Jupyter Dashboards" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.opensearch_dashboards;" vertex="1" parent="HSgyaSle7UJwmygqgZU6-2">
+                    <mxGeometry x="948" y="204" width="78" height="59" as="geometry"/>
                 </mxCell>
                 <mxCell id="HSgyaSle7UJwmygqgZU6-14" value="Internet" style="fillColor=none;strokeColor=#5A6C86;dashed=1;verticalAlign=top;fontStyle=0;fontColor=#5A6C86;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="152" y="40" width="308" height="180" as="geometry"/>
@@ -174,8 +175,10 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="HSgyaSle7UJwmygqgZU6-50" value="Dashboards" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="HSgyaSle7UJwmygqgZU6-16" target="HSgyaSle7UJwmygqgZU6-45" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
+                <mxCell id="HSgyaSle7UJwmygqgZU6-50" value="Dashboards" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="HSgyaSle7UJwmygqgZU6-16" target="2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1139" y="480" as="targetPoint"/>
+                    </mxGeometry>
                 </mxCell>
                 <mxCell id="HSgyaSle7UJwmygqgZU6-16" value="Analyst Laptops / Browsers" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3D;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.client;" parent="1" vertex="1">
                     <mxGeometry x="340" y="80" width="78" height="76" as="geometry"/>

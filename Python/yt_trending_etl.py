@@ -163,6 +163,7 @@ print(f"Writing curated Parquet to: {curated_s3_path}")
     df_curated
     .write
     .mode("overwrite")  # later: 'append' for incremental
+    .option("partitionOverwriteMode", "dynamic")
     .partitionBy("region", "trending_date")
     .format("parquet")
     .save(curated_s3_path)
