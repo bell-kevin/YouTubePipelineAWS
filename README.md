@@ -33,7 +33,12 @@ Because you will spend much of your career working in teams, team participation 
 Please note that as the instructor for this class, I will evaluate all firings for merit. I will not punish you if the firing was unjustified.
 
 ## Project Proposal
-
 [Project Proposal](ProjectProposal.md)
+
+## Notes
+[Notes](Notes.md)
+
+## TODO
+[TODO](TODO.md)
 
 <p align="right"><a href="#readme-top">back to top</a></p>
