@@ -1,20 +1,17 @@
 # Pipeline
-yt-trending-lambda_function
-
-yt-trending_etl
-
-yt-feature_labels
-
-yt-train_models_job
-
-yt-predictions_job
+The pipeline is started everyday at 6:00 am by an Event Bridge Rule.  That rule starts two lambda jobs, one that retrieves trending video data and one that retrieves comment data.  Then the trending Lambda function kicks off an ETL workflow.
 
 ```mermaid
 graph TD
-        A(yt-trending-lambda_function) --> B(yt-trending_etl)
-        B --> C(yt-feature_labels)
-        C --> D(yt_train_models_job) 
-        D --> E(yt-predictions_job)
+    A[Event Bridge Rule<br>yt-trending-daily-schedule] --> C[Lambda<br>yt-comments-ingest];
+    A[Event Bridge Rule<br>yt-trending-daily-schedule] --> D[Lambda<br>yt-trending-harvest];
+    D --> E{GLUE WORKFLOW};
+    E --> F[ETL Job<br>yt_trending_etl_job]
+    F --> G[ETL Job<br>yt-comments-etl_job]
+    G --> H[ETL Job<br>yt-comments-sentiment-etl_job]
+    H --> I[ETL Job<br>yt-feature_lables_job]
+    I --> J[ETL Job<br>yt-train_models_job]
+    J --> K[ETL Job<br>yt-predictions_job]
 ```
 
 # Schema for Curated Trending
