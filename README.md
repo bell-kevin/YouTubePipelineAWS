@@ -7,8 +7,8 @@ Posted by Tieme, modified by community. See post 'Timeline' for change history
 Retrieved 2025-11-20, License - CC BY-SA 4.0
 -->
 
-<a href="https://youtube.com"><img src="Resources/yt_logo_fullcolor_white_digital.png" alt="YouTube Logo" width="500"/></a>
-<a href="https://aws.amazon.com/what-is-cloud-computing"><img src="https://d0.awsstatic.com/logos/powered-by-aws-white.png" alt="Powered by AWS Cloud Computing" width="500"></a>
+<a href="https://youtube.com"><img src="Resources/yt_logo_fullcolor_white_digital.png" alt="YouTube Logo" width="400"/></a>
+<a href="https://aws.amazon.com/what-is-cloud-computing"><img src="https://d0.awsstatic.com/logos/powered-by-aws-white.png" alt="Powered by AWS Cloud Computing" width="400"></a>
 
 ## Project Instructions
 
