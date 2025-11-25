@@ -1,4 +1,5 @@
 import sys
+import os
 from awsglue.context import GlueContext
 from awsglue.job import Job
 from awsglue.utils import getResolvedOptions
@@ -20,8 +21,8 @@ args = getResolvedOptions(
     ["JOB_NAME", "RAW_S3_PATH", "CURATED_S3_PATH"]
 )
 
-raw_s3_path = args["RAW_S3_PATH"]         # e.g., s3://yt-analytics-cs6705-data/raw/comments/region=*/date=*/
-curated_s3_path = args["CURATED_S3_PATH"] # e.g., s3://yt-analytics-cs6705-data/curated/comments/
+raw_s3_path = args["RAW_S3_PATH"]
+curated_s3_path = os.path.join(args["CURATED_S3_PATH"],"comments")
 
 sc = SparkContext()
 glueContext = GlueContext(sc)

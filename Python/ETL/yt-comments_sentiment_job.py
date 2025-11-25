@@ -1,4 +1,5 @@
 import sys
+import os
 import boto3
 from awsglue.context import GlueContext
 from awsglue.job import Job
@@ -8,40 +9,63 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, Row, DateType
 
 # ---------- Glue boilerplate ----------
-args = getResolvedOptions(sys.argv, ["JOB_NAME"])
+args = getResolvedOptions(
+    sys.argv,
+    ["JOB_NAME", "RAW_S3_PATH", "CURATED_S3_PATH"]
+)
+
+raw_s3_path = args["RAW_S3_PATH"]
+curated_s3_path = os.path.join(args["CURATED_S3_PATH"],"comments_sentiment")
+
 sc = SparkContext()
 glueContext = GlueContext(sc)
 spark = glueContext.spark_session
+
 job = Job(glueContext)
 job.init(args["JOB_NAME"], args)
 
-RAW_COMMENTS_PATH = "s3://yt-analytics-cs6705-data/raw/comments/"
-CURATED_SENTIMENT_PATH = "s3://yt-analytics-cs6705-data/curated/comments_sentiment/"
+# ---------- 1) Read raw JSON + capture file path ----------
+from pyspark.sql import functions as F
 
-# ---------- 1) Read raw JSON ----------
-raw_df = spark.read.json(RAW_COMMENTS_PATH)
+raw_df = (
+    spark.read.json(raw_s3_path)
+    .withColumn("file_path", F.input_file_name())
+)
 
 raw_df.printSchema()
 raw_df.show(2, truncate=False)
 
-# Expect schema:
-# videoId  string
-# date     string
-# region   string
-# comments array<struct<textDisplay:string,...>>
+# Example file_path:
+# s3://yt-analytics-cs6705-data/raw/comments/region=US/date=2025-11-25/part-0000.json
 
-# ---------- 2) Explode comment array ----------
+# ---------- 2) Extract region/date from path + explode comments ----------
+
 comments_df = (
     raw_df
+    # extract region from .../region=XX/...
+    .withColumn(
+        "region",
+        F.regexp_extract("file_path", r"region=([^/]+)", 1)
+    )
+    # extract date string from .../date=YYYY-MM-DD/...
+    .withColumn(
+        "ingest_date",
+        F.to_date(
+            F.regexp_extract("file_path", r"date=([^/]+)", 1),
+            "yyyy-MM-dd"
+        )
+    )
+    # explode comments array
     .withColumn("comment", F.explode("comments"))
     .select(
         F.col("videoId").alias("video_id"),
         F.col("region"),
-        F.to_date("date").alias("ingest_date"),   # <-- cast to date
+        F.col("ingest_date"),
         F.col("comment.textDisplay").alias("comment_text")
     )
     .where(F.col("comment_text").isNotNull())
 )
+
 
 # ---------- 3) Comprehend scoring ----------
 def sentiment_partition(iter_rows):
@@ -106,8 +130,8 @@ agg_df = (
     agg_df.write
         .mode("overwrite")
         .partitionBy("region", "ingest_date")
-        .parquet(CURATED_SENTIMENT_PATH)
+        .parquet(curated_s3_path)
 )
 
-print("Wrote sentiment aggregates to:", CURATED_SENTIMENT_PATH)
+print("Wrote sentiment aggregates to:", curated_s3_path)
 job.commit()

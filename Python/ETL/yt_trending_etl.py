@@ -1,4 +1,5 @@
 import sys
+import os
 from awsglue.transforms import *
 from awsglue.utils import getResolvedOptions
 from pyspark.context import SparkContext
@@ -18,7 +19,7 @@ args = getResolvedOptions(
 )
 
 raw_s3_path = args["RAW_S3_PATH"]
-curated_s3_path = args["CURATED_S3_PATH"]
+curated_s3_path = os.path.join(args["CURATED_S3_PATH"],"trending")
 
 # --------- Glue / Spark bootstrap ---------
 sc = SparkContext()
