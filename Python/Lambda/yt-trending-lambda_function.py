@@ -54,7 +54,7 @@ def fetch_trending(region_code, max_results=50):
         return json.loads(body)
 
 
-def fetch_comments_for_video(video_id, max_comments=50):
+def fetch_comments_for_video(video_id, max_comments=250):
     """
     Call commentThreads.list for a single video, returning a list of comment dicts.
     """

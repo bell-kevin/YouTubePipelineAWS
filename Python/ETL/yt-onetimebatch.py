@@ -15,20 +15,31 @@ spark = glueContext.spark_session
 job = Job(glueContext)
 job.init(args["JOB_NAME"], args)
 
-# Allow dynamic partition overwrite (so we can overwrite one day’s partition cleanly)
-spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
-
 # ---------------- Paths (adjust if needed) ----------------
 COMMENTS_SENTIMENT_PATH = "s3://yt-analytics-cs6705-data/curated/comments_sentiment/"
 TRENDING_PATH          = "s3://yt-analytics-cs6705-data/curated/trending/"
 LABELED_FEATURES_PATH  = "s3://yt-analytics-cs6705-data/curated/labeled_features/"
 
-# ---------------- 1) Load ALL curated trending ----------------
+# Allow dynamic partition overwrite
+spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
+
+# ---------------- Load comments sentiment data ----------------
+sent_df = spark.read.parquet(COMMENTS_SENTIMENT_PATH)
+
+# sentiment schema already has ingest_date as DATE, so keep it
+# if it's string in your version, cast it to date:
+# sent_df = sent_df.withColumn("ingest_date", F.to_date("ingest_date"))
+
+# ---------------- Load curated trending ----------------
 trending_df = spark.read.parquet(TRENDING_PATH)
 
-# trending_date is string; make a proper DATE column for time windows
-trending_df = trending_df.withColumn("ingest_date", F.to_date("trending_date"))
+# IMPORTANT: trending_date is string in curated; make a DATE version for time windows
+trending_df = (
+    trending_df
+        .withColumn("ingest_date", F.to_date("trending_date"))  # <-- key fix
+)
 
+# Basic sanity filters
 trending_df = (
     trending_df
         .filter(F.col("video_id").isNotNull())
@@ -36,24 +47,10 @@ trending_df = (
         .filter(F.col("ingest_date").isNotNull())
 )
 
-print("Total curated trending rows:", trending_df.count())
+print("Trending row count:", trending_df.count())
+trending_df.select("region", "ingest_date").groupBy("region").count().show()
 
-# Find the latest ingest_date we want to produce labels for
-max_ingest_date = trending_df.agg(F.max("ingest_date").alias("max_ingest_date")).collect()[0]["max_ingest_date"]
-print("Latest ingest_date to label:", max_ingest_date)
-
-# IMPORTANT:
-# We keep ALL rows in trending_df for feature engineering (so prev_* and next_* see history),
-# but we will ONLY WRITE OUT the rows with ingest_date == max_ingest_date at the end.
-
-# ---------------- 2) Load ALL curated comments sentiment ----------------
-sent_df = spark.read.parquet(COMMENTS_SENTIMENT_PATH)
-
-# Ensure sentiment ingest_date is DATE
-if "ingest_date" in sent_df.columns:
-    sent_df = sent_df.withColumn("ingest_date", F.to_date("ingest_date"))
-
-# ---------------- 3) Window for time-based features (over full history) ----------------
+# ---------------- Window for time-based features ----------------
 w = Window.partitionBy("region", "video_id").orderBy("ingest_date")
 
 feat_df = (
@@ -66,7 +63,7 @@ feat_df = (
         .withColumn("next_ingest_date",   F.lead("ingest_date").over(w))
 )
 
-# ---------------- 4) Join sentiment features (full history) ----------------
+# ---------------- Join sentiment features ----------------
 feat_df = (
     feat_df
         .join(
@@ -84,7 +81,7 @@ feat_df = (
         })
 )
 
-# ---------------- 5) Time delta ----------------
+# ---------------- Time delta ----------------
 feat_df = feat_df.withColumn(
     "delta_days",
     F.when(
@@ -93,7 +90,7 @@ feat_df = feat_df.withColumn(
     ).otherwise(F.lit(1))
 )
 
-# ---------------- 6) Velocities + ratios + log features ----------------
+# ---------------- Velocities + ratios ----------------
 feat_df = (
     feat_df
         .withColumn(
@@ -141,7 +138,7 @@ feat_df = (
         .withColumn("log_comment_count", F.log1p("comment_count").cast("double"))
 )
 
-# ---------------- 7) Labels ----------------
+# ---------------- Labels ----------------
 feat_df = (
     feat_df
         .withColumn("log_next_view_count", F.log1p("next_view_count"))
@@ -156,26 +153,24 @@ feat_df = (
         )
 )
 
-# Force label to double explicitly
-feat_df = feat_df.withColumn("stay_trending_next", F.col("stay_trending_next").cast("double"))
+feat_df = feat_df.withColumn(
+    "stay_trending_next",
+    F.col("stay_trending_next").cast("double")
+)
 
-# ---------------- 8) Filter to DAILY-ONLY output ----------------
-# We only write labels/features for the latest ingest_date
-labeled_df = feat_df.filter(F.col("ingest_date") == max_ingest_date)
+labeled_df = feat_df
 
-print("Daily labeled rows for", max_ingest_date, ":", labeled_df.count())
+print("Backfill labeled rows:", labeled_df.count())
 labeled_df.groupBy("stay_trending_next").count().show()
 
-# ---------------- 9) Write out just that day ----------------
-# With dynamic partition overwrite mode, this will only replace that day's partition.
+# ---------------- Write labeled features ----------------
 (
     labeled_df
         .write
-        .mode("overwrite")
+        .mode("overwrite")   # with dynamic partition mode, this overwrites partitions
         .partitionBy("region", "ingest_date")
         .parquet(LABELED_FEATURES_PATH)
 )
 
-print("Wrote labeled features for", max_ingest_date, "to", LABELED_FEATURES_PATH)
-
+print("Backfill complete ->", LABELED_FEATURES_PATH)
 job.commit()

@@ -15,40 +15,42 @@ graph TD
 ```
 
 # Schema for Curated Trending
-Trending rows: 308  
-root  
- |-- video_id: string (nullable = true)  
- |-- channel_id: string (nullable = true)  
- |-- category_id: string (nullable = true)  
- |-- title: string (nullable = true)  
- |-- description: string (nullable = true)  
- |-- tags: array (nullable = true)  
- |    |-- element: string (containsNull = true)  
- |-- default_lang: string (nullable = true)  
- |-- duration_iso: string (nullable = true)  
- |-- dimension: string (nullable = true)  
- |-- definition: string (nullable = true)  
- |-- caption: string (nullable = true)  
- |-- source_file: string (nullable = true)  
- |-- trending_date_raw: string (nullable = true)  
- |-- view_count: long (nullable = true)  
- |-- like_count: long (nullable = true)  
- |-- comment_count: long (nullable = true)  
- |-- published_at: timestamp (nullable = true)  
- |-- published_date: date (nullable = true)  
- |-- published_hour: integer (nullable = true)  
- |-- published_year: integer (nullable = true)  
- |-- published_week: integer (nullable = true)  
- |-- title_clean: string (nullable = true)  
+root
+ |-- video_id: string (nullable = true)
+ |-- channel_id: string (nullable = true)
+ |-- category_id: string (nullable = true)
+ |-- title: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- tags: array (nullable = true)
+ |    |-- element: string (containsNull = true)
+ |-- default_lang: string (nullable = true)
+ |-- duration_iso: string (nullable = true)
+ |-- dimension: string (nullable = true)
+ |-- definition: string (nullable = true)
+ |-- caption: string (nullable = true)
+ |-- source_file: string (nullable = true)
+ |-- trending_date_raw: string (nullable = true)
+ |-- view_count: long (nullable = true)
+ |-- like_count: long (nullable = true)
+ |-- comment_count: long (nullable = true)
+ |-- published_at: timestamp (nullable = true)
+ |-- published_date: date (nullable = true)
+ |-- published_hour: integer (nullable = true)
+ |-- published_year: integer (nullable = true)
+ |-- published_week: integer (nullable = true)
+ |-- title_clean: string (nullable = true)
+ |-- region: string (nullable = true)
+ |-- trending_date: date (nullable = true)
 
  # Schema for Curated Comments
- Comments rows: 1950  
-root  
- |-- video_id: string (nullable = true)  
- |-- author_display_name: string (nullable = true)  
- |-- comment_text: string (nullable = true)  
- |-- like_count: long (nullable = true)  
- |-- published_at: string (nullable = true)  
+root
+ |-- video_id: string (nullable = true)
+ |-- author_display_name: string (nullable = true)
+ |-- comment_text: string (nullable = true)
+ |-- like_count: long (nullable = true)
+ |-- published_at: string (nullable = true)
+ |-- region: string (nullable = true)
+ |-- ingest_date: date (nullable = true)
 
  ## Example
 
@@ -66,6 +68,19 @@ root
 |sNHHfHIewpU|0.21364659490063787 |0.13959275853121653 |0.6237579956650734  |0.023002657078541232|
 
 only showing top 10 rows
+
+# Schema for Curated Sentiment Data
+root
+ |-- video_id: string (nullable = true)
+ |-- avg_comment_sent_pos: double (nullable = true)
+ |-- avg_comment_sent_neg: double (nullable = true)
+ |-- avg_comment_sent_neu: double (nullable = true)
+ |-- avg_comment_sent_mix: double (nullable = true)
+ |-- net_comment_sentiment: double (nullable = true)
+ |-- comment_count_scored: long (nullable = true)
+ |-- region: string (nullable = true)
+ |-- ingest_date: date (nullable = true)
+
 
 # Schema for Predicted Trending
 
