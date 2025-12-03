@@ -41,4 +41,6 @@ Please note that as the instructor for this class, I will evaluate all firings f
 ## TODO
 [TODO](TODO.md)
 
+https://docs.google.com/document/d/1DZMIBqV4MBL5r5YGobFmRfblJUcRrJ7MrwSeqJXpMOs/edit?tab=t.0#heading=h.abprv9xacjmy
+
 <p align="right"><a href="#readme-top">back to top</a></p>
