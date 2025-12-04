@@ -62,7 +62,7 @@ Predicted outputs include next-day view counts and probabilities of staying in t
 
 ### 4.5 Cost and Operational Considerations
 
-Using serverless ingestion and managed Spark (Glue) minimized operational burden. Most spend comes from Glue job runtime and NAT egress during package downloads; our final run-rate stayed near the planned ~$180 budget. Partition pruning and Parquet compression reduced Athena costs. The workflow’s dependency graph lowered failure domains by sequencing ETL stages.
+Using serverless ingestion and managed Spark (Glue) minimized operational burden. Most spend comes from Glue job runtime and NAT egress during package downloads; our final run-rate stayed near the planned ~$250 budget. Partition pruning and Parquet compression reduced Athena costs. The workflow’s dependency graph lowered failure domains by sequencing ETL stages.
 
 ## 5. Team Contributions
 
