@@ -10,36 +10,39 @@ Retrieved 2025-11-20, License - CC BY-SA 4.0
 <a href="https://youtube.com"><img src="Resources/yt_logo_fullcolor_white_digital.png" alt="YouTube Logo" width="400"/></a>
 <a href="https://aws.amazon.com/what-is-cloud-computing"><img src="https://d0.awsstatic.com/logos/powered-by-aws-white.png" alt="Powered by AWS Cloud Computing" width="400"></a>
 
-## Project Instructions
+## Overview
 
-There are a number of project options available for your team. You can select one of the ones that I describe on the project options page, or you can work on your own idea. Please discuss that idea with me, either in person or via discord prior to submitting this assignment. Keep in mind this is the project your group will be working on the remainder of the semester, so choose something that will keep you busy and interested the whole time. Please make sure you give me enough detail to understand what it is you are planning on doing.
+This repository contains the artifacts for **Cloud-Based YouTube Trending Analytics Pipeline on AWS**, a serverless data and ML workflow that ingests daily trending-video metadata and comments, curates analytics-ready datasets, and produces next-day trending predictions. The system emphasizes managed AWS services to minimize operations overhead while keeping costs predictable.
 
-This project will allow you to utilize the skills you have learned this semester, while also incorporating the opportunity to do some independent learning on a related field/skill. You will also share a single AWS account to do the work of this final project.
+### Key Capabilities
+- **Daily ingestion**: EventBridge triggers Lambda functions that call the YouTube Data API and land raw JSON into partitioned S3 buckets by region and ingest date.
+- **Curated ETL layers**: AWS Glue jobs flatten, type-cast, deduplicate, and partition trending and comment data into Parquet, enabling efficient Athena queries and downstream feature computation.
+- **Sentiment + feature engineering**: Comments are scored with AWS Comprehend; trending metrics are joined with sentiment aggregates to build labeled feature sets capturing engagement momentum and audience tone.
+- **Model training and predictions**: Glue jobs retrain models on updated features and emit next-day view-growth estimates and stay-trending probabilities for analytics dashboards.
+- **Secure, modular infrastructure**: A dedicated VPC, Secrets Manager–backed credentials, and clearly separated scripts/notebooks keep ingestion, ETL, ML, and presentation assets organized.
 
-For this assignment, I want you to submit a project proposal. The proposal must consist of the following minimums:
+## Repository Map
+- `Python/ETL/`: Glue scripts for trending ingestion, comments processing, sentiment integration, and feature labeling used throughout the workflow.
+- `Notebooks/`: Exploratory analysis, validation, and visualization notebooks.
+- `Diagrams/`: Architecture and network diagrams referenced in the presentation materials.
+- `Resources/`: Branding assets displayed in this README.
+- `FinalReport.md`: Full project write-up covering scope, architecture, results, and cost considerations.
+- `PresentationScript.md` and `Presentation` assets: Slide narrative outlining workflow stages and infrastructure.
+- `Notes.md` and `TODO.md`: Working design notes, schemas, and milestone tracking.
 
-- A thorough description of the project (e.g. what are you going to do, and deliver by the end of the semester)
-    
-- A description of the tools you plan on utilizing the accomplish the project
-    
-- A proposed budget of resources required to complete the project (use the aws pricing calculator)
-    
-- A set of milestones each week you will complete by the presentation deadline (the last class day of the semester).
-    
-- A plan on how your team will collaborate / communicate / etc.
+## Quick Links
+- [Final Report](FinalReport.md)
+- [Project Proposal](ProjectProposal.md)
+- [Notes](Notes.md)
+- [TODO](TODO.md)
+- [Presentation Script](PresentationScript.md)
 
-Because you will spend much of your career working in teams, team participation is critical to your success in this class. It is also not fair for one team member to do the work while others "free-ride" off of their work. Much like in industry, there are consequences when not everyone works together equitably. Teams will have the option of ‘firing’ you if they feel that you are not equitably participating in the project. This means that if you are fired, you will not be on a team, and may receive a zero on the final project and evaluation. You may petition other teams to ‘hire’ you, but if no other team will hire you it will result in a failure for the course. Alternatively, you can attempt a group project on your own as an individual, but you will be subject to the same expectations as all of the other groups at the final submission (even if the firing takes place at the end).
-
-Please note that as the instructor for this class, I will evaluate all firings for merit. I will not punish you if the firing was unjustified.
-
-## Project Proposal
-[Project Proposal](ProjectProposal.md)
-
-## Notes
-[Notes](Notes.md)
-
-## TODO
-[TODO](TODO.md)
+## How to Use This Repo
+1. Review `FinalReport.md` for the full architecture description, operational flow, and future work ideas.
+2. Browse `Python/ETL/` to see Glue job implementations for trending ingestion, comments curation, and sentiment/feature engineering.
+3. Open `Notebooks/` for exploratory analyses and validation steps used during model development.
+4. Check `Diagrams/` alongside `PresentationScript.md` for visual references to the pipeline and network layout.
+5. Track outstanding tasks or design decisions in `TODO.md` and `Notes.md` when iterating on the pipeline.
 
 https://docs.google.com/document/d/1DZMIBqV4MBL5r5YGobFmRfblJUcRrJ7MrwSeqJXpMOs/edit?tab=t.0#heading=h.abprv9xacjmy
 
