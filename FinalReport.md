@@ -66,7 +66,7 @@ Using serverless ingestion and managed Spark (Glue) minimized operational burden
 
 ## 5. Team Contributions
 
-- **Kevin Bell:** Led architecture, VPC/network design, and Lambda + EventBridge integration; implemented trending ETL, curated schema definitions, and presentation materials documenting the workflow and infrastructure ([PresentationScript.md, lines 3–119](PresentationScript.md#L3-L119); [Python/ETL/yt_trending_etl.py, lines 12–168](Python/ETL/yt_trending_etl.py#L12-L168)).
+- **Kevin Bell:** VPC/network design, and Lambda + EventBridge integration; implemented trending ETL, curated schema definitions, and presentation materials documenting the workflow and infrastructure ([PresentationScript.md, lines 3–119](PresentationScript.md#L3-L119); [Python/ETL/yt_trending_etl.py, lines 12–168](Python/ETL/yt_trending_etl.py#L12-L168)).
 - **Jacob Child:** Focused on comments ingestion, sentiment processing, and feature/label engineering; authored the backfill job that joins sentiment with trending metrics and produces ML-ready datasets; supported model training and prediction stages ([Python/ETL/yt_comments_etl.py, lines 8–110](Python/ETL/yt_comments_etl.py#L8-L110); [Python/ETL/yt-onetimebatch.py, lines 1–209](Python/ETL/yt-onetimebatch.py#L1-L209); [Notes.md, lines 51–119](Notes.md#L51-L119)).
 
 Workload was split evenly, with paired code reviews on each ETL milestone and shared notebook-based data validation.
