@@ -16,27 +16,27 @@ Prior research on video virality highlights the importance of early engagement v
 
 ### 3.1 End-to-End Flow
 
-A 6:00 AM EventBridge rule triggers two Lambda functions to fetch trending videos and related comments via the YouTube Data API. Raw JSON files are written to S3 under partitioned folders by region and ingest date. The trending-ingest Lambda then launches a Glue Workflow that chains six ETL jobs, ensuring dependency ordering and eliminating manual coordination.【F:Notes.md†L1-L18】
+A 6:00 AM EventBridge rule triggers two Lambda functions to fetch trending videos and related comments via the YouTube Data API. Raw JSON files are written to S3 under partitioned folders by region and ingest date. The trending-ingest Lambda then launches a Glue Workflow that chains six ETL jobs, ensuring dependency ordering and eliminating manual coordination ([Notes.md, lines 1–18](Notes.md#L1-L18)).
 
 ### 3.2 Trending ETL
 
-The `yt_trending_etl.py` Glue job flattens nested API responses, extracts region and trending date from S3 paths, casts metrics, deduplicates by video ID, and enriches timestamps with date, hour, week, and cleaned titles. It writes curated Parquet partitioned by region and trending_date, enabling efficient Athena queries and downstream feature computation.【F:Python/ETL/yt_trending_etl.py†L12-L119】【F:Python/ETL/yt_trending_etl.py†L121-L168】
+The `yt_trending_etl.py` Glue job flattens nested API responses, extracts region and trending date from S3 paths, casts metrics, deduplicates by video ID, and enriches timestamps with date, hour, week, and cleaned titles. It writes curated Parquet partitioned by region and trending_date, enabling efficient Athena queries and downstream feature computation ([Python/ETL/yt_trending_etl.py, lines 12–119](Python/ETL/yt_trending_etl.py#L12-L119); [lines 121–168](Python/ETL/yt_trending_etl.py#L121-L168)).
 
 ### 3.3 Comments ETL
 
-The comments job normalizes one row per comment, keeps author, text, likes, and published timestamp, and derives region/ingest_date from file names. Curated Parquet is appended partitioned by region and ingest_date, ready for sentiment analysis and engagement statistics.【F:Python/ETL/yt_comments_etl.py†L8-L110】
+The comments job normalizes one row per comment, keeps author, text, likes, and published timestamp, and derives region/ingest_date from file names. Curated Parquet is appended partitioned by region and ingest_date, ready for sentiment analysis and engagement statistics ([Python/ETL/yt_comments_etl.py, lines 8–110](Python/ETL/yt_comments_etl.py#L8-L110)).
 
 ### 3.4 Sentiment and Feature Labeling
 
-A subsequent Glue job (notebook-linked) scores each comment with AWS Comprehend to compute per-video averages of positive, negative, neutral, and mixed sentiment. The one-time backfill script `yt-onetimebatch.py` joins curated trending data with sentiment, constructs time-window lags and ratios (view/like/comment velocities, growth ratios, engagement per view), derives labels for next-day view growth and continued trending presence, and writes labeled feature sets partitioned by region and ingest date.【F:Notes.md†L51-L86】【F:Python/ETL/yt-onetimebatch.py†L1-L157】【F:Python/ETL/yt-onetimebatch.py†L159-L209】
+A subsequent Glue job (notebook-linked) scores each comment with AWS Comprehend to compute per-video averages of positive, negative, neutral, and mixed sentiment. The one-time backfill script `yt-onetimebatch.py` joins curated trending data with sentiment, constructs time-window lags and ratios (view/like/comment velocities, growth ratios, engagement per view), derives labels for next-day view growth and continued trending presence, and writes labeled feature sets partitioned by region and ingest date ([Notes.md, lines 51–86](Notes.md#L51-L86); [Python/ETL/yt-onetimebatch.py, lines 1–157](Python/ETL/yt-onetimebatch.py#L1-L157); [lines 159–209](Python/ETL/yt-onetimebatch.py#L159-L209)).
 
 ### 3.5 Modeling and Predictions
 
-Within the Glue workflow, training and prediction steps (scripts in `ETL/`) retrain models on updated labeled features and emit next-day forecasts. Outputs include predicted view counts and probability a video will remain trending, stored as curated Parquet for dashboarding and ad hoc analytics.【F:Notes.md†L88-L119】
+Within the Glue workflow, training and prediction steps (scripts in `ETL/`) retrain models on updated labeled features and emit next-day forecasts. Outputs include predicted view counts and probability a video will remain trending, stored as curated Parquet for dashboarding and ad hoc analytics ([Notes.md, lines 88–119](Notes.md#L88-L119)).
 
 ### 3.6 Infrastructure and Security
 
-A dedicated VPC isolates Glue resources, with public subnets for internet-facing components and private subnets using a NAT Gateway for outbound API/library access. S3 serves as the data lake for raw, curated, and model outputs. Secrets Manager supplies API credentials to Lambda. The architecture diagrams (`FlowDiagram.png`, `NetworkInfrastructure.png`) document connectivity and dependency ordering.【F:PresentationScript.md†L12-L75】
+A dedicated VPC isolates Glue resources, with public subnets for internet-facing components and private subnets using a NAT Gateway for outbound API/library access. S3 serves as the data lake for raw, curated, and model outputs. Secrets Manager supplies API credentials to Lambda. The architecture diagrams (`FlowDiagram.png`, `NetworkInfrastructure.png`) document connectivity and dependency ordering ([PresentationScript.md, lines 12–75](PresentationScript.md#L12-L75)).
 
 ### 3.7 Collaboration & Project Management
 
@@ -46,19 +46,19 @@ We adhered to weekly milestones captured in the proposal and TODO lists, iterati
 
 ### 4.1 Data Quality and Curated Schemas
 
-Curated trending and comments schemas capture identifiers, metrics, time fields, and text fields with consistent typing, enabling Athena validation and reproducible analytics.【F:Notes.md†L20-L50】 Deduplication by video ID with highest view count removes API duplicates, while partitioning by region and date keeps cost predictable. Title cleaning strips URLs and normalizes whitespace for later NLP.
+Curated trending and comments schemas capture identifiers, metrics, time fields, and text fields with consistent typing, enabling Athena validation and reproducible analytics ([Notes.md, lines 20–50](Notes.md#L20-L50)). Deduplication by video ID with highest view count removes API duplicates, while partitioning by region and date keeps cost predictable. Title cleaning strips URLs and normalizes whitespace for later NLP.
 
 ### 4.2 Sentiment Insights
 
-Sentiment aggregation surfaces audience reception per video and date. Example rows show mixed sentiment distributions, with negative shares ranging from ~0.03 to ~0.27 and positive shares often above 0.45, offering discriminative signals for trend persistence.【F:Notes.md†L52-L79】 These features are joined to trending metrics to capture both engagement magnitude and tone.
+Sentiment aggregation surfaces audience reception per video and date. Example rows show mixed sentiment distributions, with negative shares ranging from ~0.03 to ~0.27 and positive shares often above 0.45, offering discriminative signals for trend persistence ([Notes.md, lines 52–79](Notes.md#L52-L79)). These features are joined to trending metrics to capture both engagement magnitude and tone.
 
 ### 4.3 Feature Engineering and Labels
 
-Lag-based velocities and growth ratios quantify momentum, while engagement-per-view and log-count transforms stabilize variance across orders of magnitude. Labels track whether a video remains in the trending set on the next ingest date and estimate logarithmic view growth; this framing suits classification for stay-trending probability and regression for view-count prediction.【F:Python/ETL/yt-onetimebatch.py†L67-L209】
+Lag-based velocities and growth ratios quantify momentum, while engagement-per-view and log-count transforms stabilize variance across orders of magnitude. Labels track whether a video remains in the trending set on the next ingest date and estimate logarithmic view growth; this framing suits classification for stay-trending probability and regression for view-count prediction ([Python/ETL/yt-onetimebatch.py, lines 67–209](Python/ETL/yt-onetimebatch.py#L67-L209)).
 
 ### 4.4 Model Outputs
 
-Predicted outputs include next-day view counts and probabilities of staying in the trending set, written to curated S3 paths. Example rows illustrate high-confidence predictions (probability ~1.0) for diverse videos, validating pipeline plumbing from ingestion through ML inference.【F:Notes.md†L88-L119】
+Predicted outputs include next-day view counts and probabilities of staying in the trending set, written to curated S3 paths. Example rows illustrate high-confidence predictions (probability ~1.0) for diverse videos, validating pipeline plumbing from ingestion through ML inference ([Notes.md, lines 88–119](Notes.md#L88-L119)).
 
 ### 4.5 Cost and Operational Considerations
 
@@ -66,8 +66,8 @@ Using serverless ingestion and managed Spark (Glue) minimized operational burden
 
 ## 5. Team Contributions
 
-- **Kevin Bell:** Led architecture, VPC/network design, and Lambda + EventBridge integration; implemented trending ETL, curated schema definitions, and presentation materials documenting the workflow and infrastructure.【F:PresentationScript.md†L3-L119】【F:Python/ETL/yt_trending_etl.py†L12-L168】
-- **Jacob Child:** Focused on comments ingestion, sentiment processing, and feature/label engineering; authored the backfill job that joins sentiment with trending metrics and produces ML-ready datasets; supported model training and prediction stages.【F:Python/ETL/yt_comments_etl.py†L8-L110】【F:Python/ETL/yt-onetimebatch.py†L1-L209】【F:Notes.md†L51-L119】
+- **Kevin Bell:** Led architecture, VPC/network design, and Lambda + EventBridge integration; implemented trending ETL, curated schema definitions, and presentation materials documenting the workflow and infrastructure ([PresentationScript.md, lines 3–119](PresentationScript.md#L3-L119); [Python/ETL/yt_trending_etl.py, lines 12–168](Python/ETL/yt_trending_etl.py#L12-L168)).
+- **Jacob Child:** Focused on comments ingestion, sentiment processing, and feature/label engineering; authored the backfill job that joins sentiment with trending metrics and produces ML-ready datasets; supported model training and prediction stages ([Python/ETL/yt_comments_etl.py, lines 8–110](Python/ETL/yt_comments_etl.py#L8-L110); [Python/ETL/yt-onetimebatch.py, lines 1–209](Python/ETL/yt-onetimebatch.py#L1-L209); [Notes.md, lines 51–119](Notes.md#L51-L119)).
 
 Workload was split evenly, with paired code reviews on each ETL milestone and shared notebook-based data validation.
 
