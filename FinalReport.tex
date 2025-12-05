@@ -7,6 +7,7 @@
 \usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage{float}
+\usepackage{comment}
 \graphicspath{{Diagrams/}}
 
 % Double spacing per assignment requirements
@@ -31,12 +32,14 @@ Trending videos on YouTube are built on statistics of views, like, comments and 
 \subsection{End-to-End Flow}
 A 6:00 AM EventBridge rule triggers two Lambda functions to fetch trending videos and comments via the YouTube Data API. The trending Lambda then launches a Glue Workflow that chains six ETL jobs, ensuring dependency ordering and eliminating manual coordination. Figure~\ref{fig:flow} summarizes the daily flow.
 
+%\begin{comment}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{FlowDiagram.png}
     \caption{Daily ingestion and ETL orchestration triggered by EventBridge.}
     \label{fig:flow}
 \end{figure}
+%\end{comment}
 
 \subsection{Trending ETL}
 The \texttt{yt\_trending\_etl.py} Glue job flattens nested API responses, extracts region and trending date from S3 paths, casts metrics, deduplicates by video ID (keeping the highest view count), and enriches timestamps with date, hour, week, and cleaned titles before writing curated Parquet partitioned by region and trending date.\footnote{See \texttt{Python/ETL/yt\_trending\_etl.py}, lines 12--168.}
@@ -53,17 +56,20 @@ Within the Glue workflow, training and prediction steps retrain models on update
 \subsection{Infrastructure and Security}
 A dedicated VPC isolates Glue resources, with public subnets for internet-facing components and private subnets using a NAT Gateway for outbound API and package access. Amazon S3 serves as the data lake for raw, curated, and model outputs. Secrets Manager supplies API credentials to Lambda. Figure~\ref{fig:network} depicts the network design, and the Glue workflow ordering mirrors the medallion progression from raw to curated to ML outputs.
 
+%\begin{comment}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{CorrectNetworkInfrastructure.png}
     \caption{Network architecture: VPC isolation, NAT routing, and service boundaries.}
     \label{fig:network}
 \end{figure}
+%\end{comment}
 
 \section{Results and Analysis}
 \subsection{Curated Schemas}
 The curated trending schema captures identifiers, metrics, time fields, and cleaned titles; the curated comments schema retains author, text, likes, and published timestamp. Example schemas are shown in Table~\ref{tab:schemas}.
 
+%\begin{comment}
 \begin{table}[H]
     \centering
     \begin{tabular}{p{0.45\textwidth} p{0.45\textwidth}}
@@ -83,10 +89,12 @@ The curated trending schema captures identifiers, metrics, time fields, and clea
     \caption{Curated schemas summarized from \texttt{Notes.md}.}
     \label{tab:schemas}
 \end{table}
+%\end{comment}
 
 \subsection{Sentiment Insights}
 Aggregated sentiment features surface audience reception per video and date. Table~\ref{tab:sentiment} highlights example distributions (positive shares commonly above 0.45 with varying negative proportions), offering discriminative signals for trend persistence.
 
+%\begin{comment}
 \begin{table}[H]
     \centering
     \begin{tabular}{lcccc}
@@ -103,6 +111,7 @@ Aggregated sentiment features surface audience reception per video and date. Tab
     \caption{Sample aggregated comment sentiment scores.}
     \label{tab:sentiment}
 \end{table}
+%\end{comment}
 
 \subsection{Feature Engineering and Labels}
 Lag-based velocities and growth ratios quantify momentum, while engagement-per-view and log-count transforms stabilize variance across orders of magnitude. Labels track whether a video remains in the trending set on the next ingest date and estimate logarithmic view growth; this framing supports classification for stay-trending probability and regression for view-count prediction.
@@ -110,6 +119,7 @@ Lag-based velocities and growth ratios quantify momentum, while engagement-per-v
 \subsection{Model Outputs}
 Predicted outputs include next-day view counts and probabilities of staying in the trending set. Table~\ref{tab:predictions} shows example rows with high-confidence predictions across diverse videos.
 
+%\begin{comment}
 \begin{table}[H]
     \centering
     \begin{tabular}{lrrr}
@@ -126,10 +136,13 @@ Predicted outputs include next-day view counts and probabilities of staying in t
     \caption{Sample model predictions for next-day trending likelihood.}
     \label{tab:predictions}
 \end{table}
+%\end{comment}
 
 \subsection{Dashboard Visualizations}
 We built simple dashboards to contextualize the curated data and model outputs for stakeholders. The top-20 charts surface which creators and categories dominate each region on a given day, making it easy to verify the coverage and data quality of the ingestion pipeline. The prediction panel overlays probability scores on recent trending videos so product, ads, and moderation teams can spot content likely to remain popular.
 
+%\begin{comment}
+{\singlespacing
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{Screenshot 2025-12-05 123426.png}
@@ -157,6 +170,8 @@ We built simple dashboards to contextualize the curated data and model outputs f
     \caption{Prediction dashboard showing next-day trending likelihood scores for currently trending videos.}
     \label{fig:predictions-dashboard}
 \end{figure}
+}
+%\end{comment}
 
 \subsection{Operational Considerations}
 Using serverless ingestion and managed Spark (Glue) minimized operational burden. Most spend comes from Glue job runtime and NAT egress during package downloads; partition pruning and Parquet compression reduce Athena costs. The workflow's dependency graph lowers failure domains by sequencing ETL stages.
