@@ -7,9 +7,7 @@
 \usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage{float}
-\usepackage{svg}
 \graphicspath{{Diagrams/}}
-\svgpath{{Diagrams/}}
 
 % Double spacing per assignment requirements
 \doublespacing
@@ -125,40 +123,9 @@ Predicted outputs include next-day view counts and probabilities of staying in t
         ppp7dMhzrz8 & 653{,}684 & 653{,}684 & 1.00 \\
         \bottomrule
     \end{tabular}
-\caption{Sample model predictions for next-day trending likelihood.}
+    \caption{Sample model predictions for next-day trending likelihood.}
     \label{tab:predictions}
 \end{table}
-
-\subsection{Regional Most-Viewed Trends and Prediction Snapshot}
-Figure~\ref{fig:ca-most-viewed} through Figure~\ref{fig:usa-most-viewed} illustrate the top-performing videos by view count across Canada, Great Britain, and the United States, respectively. These visuals highlight regional differences in genre, engagement, and channel reach that downstream models can exploit. Figure~\ref{fig:predictions-plot} shows a sample prediction plot summarizing expected next-day performance across videos.
-
-\begin{figure}[H]
-    \centering
-    \includesvg[width=0.9\textwidth]{mostViewedCA}
-    \caption{Top viewed trending videos in Canada.}
-    \label{fig:ca-most-viewed}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{mostViewedGB.png}
-    \caption{Top viewed trending videos in Great Britain.}
-    \label{fig:gb-most-viewed}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{mostViewedUSA.png}
-    \caption{Top viewed trending videos in the United States.}
-    \label{fig:usa-most-viewed}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{predictions.png}
-    \caption{Sample prediction output summarizing expected next-day performance.}
-    \label{fig:predictions-plot}
-\end{figure}
 
 \subsection{Operational Considerations}
 Using serverless ingestion and managed Spark (Glue) minimized operational burden. Most spend comes from Glue job runtime and NAT egress during package downloads; partition pruning and Parquet compression reduce Athena costs. The workflow's dependency graph lowers failure domains by sequencing ETL stages.
