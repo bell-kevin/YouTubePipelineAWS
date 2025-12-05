@@ -127,6 +127,40 @@ Predicted outputs include next-day view counts and probabilities of staying in t
     \label{tab:predictions}
 \end{table}
 
+\subsection{Regional Engagement Visualizations}
+To illustrate how the curated metrics surface regional differences, Figures~\ref{fig:usa-top20}--\ref{fig:gb-top20} plot the top 20 trending videos by total views for the United States, Canada, and Great Britain on a representative ingest date. The distributions demonstrate that view concentration differs by market (e.g., the United States list contains multiple videos above 150 million views, while Canada's long tail falls below 70 million), reinforcing the need to partition data and train models per region.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{mostViewedUSA.png}
+    \caption{Top 20 most viewed trending videos in the United States.}
+    \label{fig:usa-top20}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{mostViewedCA.png}
+    \caption{Top 20 most viewed trending videos in Canada.}
+    \label{fig:ca-top20}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{mostViewedGB.png}
+    \caption{Top 20 most viewed trending videos in Great Britain.}
+    \label{fig:gb-top20}
+\end{figure}
+
+\subsection{Prediction Visualization}
+The dashboard also visualizes model outputs by pairing actual view counts with next-day predictions. Figure~\ref{fig:predictions} highlights that the forecasted values closely track the observed counts for representative videos, providing a sanity check that the regression model is calibrated before deployment to the reporting layer.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{predictions.png}
+    \caption{Comparison of observed view counts and next-day predictions for sample trending videos.}
+    \label{fig:predictions}
+\end{figure}
+
 \subsection{Operational Considerations}
 Using serverless ingestion and managed Spark (Glue) minimized operational burden. Most spend comes from Glue job runtime and NAT egress during package downloads; partition pruning and Parquet compression reduce Athena costs. The workflow's dependency graph lowers failure domains by sequencing ETL stages.
 
@@ -139,34 +173,5 @@ Workload was split evenly, with paired code reviews on each ETL milestone and sh
 
 \section{Conclusion and Future Work}
 We delivered an automated, cloud-native YouTube analytics pipeline that ingests daily trending data, curates clean datasets, enriches them with sentiment, engineers predictive features, and outputs next-day trending predictions. The architecture balances scalability and cost, and the modular ETL jobs simplify maintenance. Future enhancements include incremental model retraining with drift detection, additional NLP features from titles/descriptions (e.g., embeddings) and toxicity detection on comments, near--real-time micro-batching for faster trend detection, and expanded dashboards for stakeholder-facing monitoring.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{Screenshot 2025-12-05 123426.png}
-    \caption{Top 20 Most Viewed Trending Videos in USA.}
-    \label{fig:flow}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{Screenshot 2025-12-05 124348.png}
-    \caption{Top 20 Most Viewed Trending Videos in Canada.}
-    \label{fig:flow}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{Screenshot 2025-12-05 124536.png}
-    \caption{Top 20 Most Viewed Trending Videos in Great Britain.}
-    \label{fig:flow}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{Screenshot 2025-12-05 124743.png}
-    \caption{Predictions}
-    \label{fig:flow}
-\end{figure}
-
 
 \end{document}
